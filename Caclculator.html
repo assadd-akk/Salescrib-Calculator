@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SalesCrib — Team Leader Salary Calculator</title>
+<style>
+  :root {
+    --navy-900: #0b1f3a;
+    --navy-700: #14315c;
+    --navy-500: #1f4a85;
+    --gold: #d4a72c;
+    --gold-soft: #f5e7b8;
+    --green: #1f8a4c;
+    --green-soft: #e3f5ec;
+    --red: #b3261e;
+    --red-soft: #fbe3e1;
+    --ink: #1a2433;
+    --muted: #5b6675;
+    --line: #e3e8ef;
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --shadow: 0 6px 24px rgba(11, 31, 58, 0.08);
+    --shadow-lg: 0 18px 50px rgba(11, 31, 58, 0.16);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(31, 74, 133, 0.10), transparent 60%),
+      radial-gradient(900px 500px at 110% 10%, rgba(212, 167, 44, 0.10), transparent 60%),
+      var(--bg);
+    min-height: 100vh;
+    padding: 28px 16px 60px;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  /* ---------- Header ---------- */
+  header.brand {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 18px 24px;
+    background: linear-gradient(120deg, var(--navy-900), var(--navy-700));
+    color: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .brand-left { display: flex; flex-direction: column; gap: 4px; }
+  .brand-mark {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-weight: 800; letter-spacing: 0.5px; font-size: 14px;
+    color: var(--gold);
+  }
+  .brand-mark::before {
+    content: "SC"; display: inline-grid; place-items: center;
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--gold); color: var(--navy-900);
+    font-weight: 900; font-size: 14px;
+  }
+  .brand-title { font-size: 22px; font-weight: 700; }
+  .brand-sub { font-size: 13px; opacity: 0.78; }
+  .brand-right {
+    text-align: right; font-size: 12px; opacity: 0.85; line-height: 1.7;
+  }
+  .brand-right a { color: var(--gold-soft); text-decoration: none; }
+
+  /* ---------- Layout ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 22px;
+    margin-top: 22px;
+  }
+  @media (max-width: 880px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line);
+  }
+  .card h2 {
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--navy-700);
+    margin-bottom: 4px;
+  }
+  .card .card-sub {
+    font-size: 13px; color: var(--muted); margin-bottom: 18px;
+  }
+
+  /* ---------- Form ---------- */
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy-700);
+    margin-bottom: 6px;
+  }
+  .field .hint {
+    font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 4px;
+  }
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .input-wrap .prefix {
+    position: absolute; left: 12px;
+    font-weight: 700; color: var(--muted); font-size: 14px;
+    pointer-events: none;
+  }
+  .input-wrap input {
+    width: 100%;
+    padding: 11px 14px 11px 28px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--ink);
+    background: #fff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .input-wrap input.no-prefix { padding-left: 14px; }
+  .input-wrap input:focus {
+    outline: none;
+    border-color: var(--navy-500);
+    box-shadow: 0 0 0 3px rgba(31, 74, 133, 0.12);
+  }
+  .input-wrap input::-webkit-outer-spin-button,
+  .input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .input-wrap input[type=number] { -moz-appearance: textfield; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 22px; }
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 20px;
+    transition: transform 0.05s, box-shadow 0.15s, background 0.15s;
+  }
+  .btn-primary {
+    background: linear-gradient(120deg, var(--navy-500), var(--navy-700));
+    color: #fff;
+    flex: 1;
+    box-shadow: 0 6px 16px rgba(31, 74, 133, 0.28);
+  }
+  .btn-primary:hover { box-shadow: 0 10px 24px rgba(31, 74, 133, 0.38); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-ghost {
+    background: #fff;
+    color: var(--navy-700);
+    border: 1.5px solid var(--line);
+  }
+  .btn-ghost:hover { background: #f7f9fc; }
+
+  /* ---------- Result panel ---------- */
+  #result {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #result.show { opacity: 1; }
+  #result.empty { opacity: 1; }
+
+  .placeholder {
+    text-align: center;
+    color: var(--muted);
+    padding: 40px 20px;
+    font-size: 14px;
+  }
+  .placeholder .icon {
+    font-size: 40px; margin-bottom: 8px; opacity: 0.4;
+  }
+
+  .salary-hero {
+    background: linear-gradient(135deg, var(--navy-900), var(--navy-500));
+    color: #fff;
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .salary-hero::after {
+    content: "";
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(212, 167, 44, 0.25), transparent 60%);
+    pointer-events: none;
+  }
+  .salary-hero .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    opacity: 0.8;
+  }
+  .salary-hero .amount {
+    font-size: 38px;
+    font-weight: 800;
+    margin-top: 6px;
+    letter-spacing: -0.5px;
+  }
+  .salary-hero .amount .curr {
+    font-size: 18px;
+    color: var(--gold);
+    margin-right: 6px;
+    vertical-align: 4px;
+  }
+  .salary-hero .meta {
+    font-size: 12px; opacity: 0.82; margin-top: 8px;
+  }
+
+  .tier-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-top: 10px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .tier-below { background: var(--red-soft); color: var(--red); }
+  .tier-pro { background: var(--gold-soft); color: #8a6a10; }
+  .tier-full { background: var(--green-soft); color: var(--green); }
+  .tier-over-1 { background: var(--green-soft); color: var(--green); }
+  .tier-over-2 { background: #d6f0e0; color: #0c6b34; }
+
+  /* ---------- Breakdown table ---------- */
+  .breakdown {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .breakdown th, .breakdown td {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .breakdown th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 2px solid var(--line);
+  }
+  .breakdown td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .breakdown tr.total td {
+    border-top: 2px solid var(--navy-700);
+    border-bottom: none;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--navy-900);
+    padding-top: 14px;
+  }
+  .breakdown tr.sub td {
+    font-size: 12px;
+    color: var(--muted);
+    border-bottom: none;
+    padding-top: 2px;
+    padding-bottom: 8px;
+  }
+  .breakdown .note {
+    font-size: 11px; color: var(--muted); font-weight: 400; display: block; margin-top: 2px;
+  }
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: #eef2f8;
+    color: var(--navy-700);
+    margin-left: 6px;
+  }
+  .pill.zero { background: var(--red-soft); color: var(--red); }
+  .pill.full { background: var(--green-soft); color: var(--green); }
+
+  .assumptions {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: #f7f9fc;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .assumptions strong { color: var(--navy-700); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  footer .addr { color: var(--navy-700); font-weight: 600; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .btn-row, .brand-right, .assumptions, footer .actions { display: none !important; }
+    .card { box-shadow: none; border: none; }
+    .grid { grid-template-columns: 1fr; }
+    header.brand { background: var(--navy-900) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .salary-hero, .tier-badge, .pill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Brand header -->
+  <header class="brand">
+    <div class="brand-left">
+      <span class="brand-mark">SALESCRIB LLP</span>
+      <div class="brand-title">Team Leader Salary Calculator</div>
+      <div class="brand-sub">Compensation &amp; Rewards Framework — Effective July 30, 2026</div>
+    </div>
+    <div class="brand-right">
+      salescribsols@gmail.com<br />
+      +92 346 3205779<br />
+      B-41/25 Jannat ul Barkat, Model Colony, Karachi
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- Input card -->
+    <section class="card" id="inputCard">
+      <h2>Enter TL Details</h2>
+      <div class="card-sub">Fill in the four inputs below to compute the monthly salary.</div>
+
+      <div class="field">
+        <label for="workingDays">Total working days</label>
+        <div class="input-wrap">
+          <input id="workingDays" type="number" min="0" max="31" step="0.5" placeholder="e.g. 30" class="no-prefix" />
+        </div>
+        <div class="hint">Days the TL was actively at work this month. Salary is prorated against a 30-day calendar month.</div>
+      </div>
+
+      <div class="field">
+        <label for="expectedTarget">Team TL expected target</label>
+        <div class="input-wrap">
+          <span class="prefix">$</span>
+          <input id="expectedTarget" type="number" min="0" step="0.01" placeholder="e.g. 5000" />
+        </div>
+        <div class="hint">Assigned monthly team target (in USD, same unit as the PDF baseline example).</div>
+      </div>
+
+      <div class="field">
+        <label for="achievedTarget">TL achieved target</label>
+        <div class="input-wrap">
+          <span class="prefix">$</span>
+          <input id="achievedTarget" type="number" min="0" step="0.01" placeholder="e.g. 4200" />
+        </div>
+        <div class="hint">Sales closed by the team (subordinate representatives) this month.</div>
+      </div>
+
+      <div class="field">
+        <label for="personalSale">TL personal sale</label>
+        <div class="input-wrap">
+          <span class="prefix">$</span>
+          <input id="personalSale" type="number" min="0" step="0.01" placeholder="e.g. 800" />
+        </div>
+        <div class="hint">Revenue closed directly by the TL. Per policy, this counts 100% toward the team target — no individual commission is paid on it.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="calcBtn" type="button">Calculate Salary</button>
+        <button class="btn-ghost" id="resetBtn" type="button">Reset</button>
+      </div>
+    </section>
+
+    <!-- Result card -->
+    <section class="card">
+      <h2>Salary Breakdown</h2>
+      <div class="card-sub">Step-by-step computation per SalesCrib policy.</div>
+
+      <div id="result" class="empty">
+        <div class="placeholder">
+          <div class="icon">₨</div>
+          Enter the four values on the left and click <strong>Calculate Salary</strong> to see the full breakdown.
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div class="addr">SALESCRIB LLP — Software House</div>
+    B-41/25 Jannat ul Barkat, Model Colony, Karachi &nbsp;·&nbsp; +92 346 3205779 &nbsp;·&nbsp; salescribsols@gmail.com<br />
+    Authorized by Hamza Asim, Director. Effective Date: July 30, 2026.
+    <div class="actions" style="margin-top:10px;">
+      <button class="btn-ghost" id="printBtn" type="button" style="display:none;">Print / Save as PDF</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---- Policy constants (from PDF) ----
+  const BASE_SALARY_FULL = 30000;          // PKR per calendar month
+  const STANDARD_MONTH_DAYS = 30;          // calendar month denominator
+  const BONUS_POOL_BASELINE_PKR = 80000;   // variable bonus pool at 100% attainment
+  const BONUS_POOL_BASELINE_TARGET_USD = 5000; // target in the PDF example
+  // Derived: pool scales linearly with target → PKR per $1 of target
+  const POOL_PER_USD = BONUS_POOL_BASELINE_PKR / BONUS_POOL_BASELINE_TARGET_USD; // = 16
+
+  const TIER_BELOW = 70;      // <70% → no bonus
+  const TIER_FULL = 100;      // >=100% → full pool
+  const TIER_OVERRIDE_1_LO = 100, TIER_OVERRIDE_1_HI = 120; // +0.5%
+  const TIER_OVERRIDE_2_LO = 120;                            // +1.0%
+  const OVERRIDE_1_PCT = 0.005;
+  const OVERRIDE_2_PCT = 0.010;
+
+  // ---- Helpers ----
+  const $ = (id) => document.getElementById(id);
+  const fmtPKR = (n) => "₨ " + Number(n).toLocaleString("en-PK", { maximumFractionDigits: 0 });
+  const fmtUSD = (n) => "$ " + Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const fmtPct = (n) => (n).toFixed(1) + "%";
+  const num = (v) => {
+    const n = parseFloat(v);
+    return isNaN(n) || n < 0 ? 0 : n;
+  };
+
+  // ---- Main calculation ----
+  function calculate(input) {
+    const workingDays     = input.workingDays;
+    const expectedTarget  = input.expectedTarget;
+    const achievedTarget  = input.achievedTarget;
+    const personalSale    = input.personalSale;
+
+    // Proration factor
+    const prorate = Math.min(workingDays / STANDARD_MONTH_DAYS, 1); // never exceed 1
+    const prorateLabel = workingDays + " / " + STANDARD_MONTH_DAYS + " days";
+
+    // Total gross sales — personal sale counts 100% toward team target
+    const totalGrossSales = achievedTarget + personalSale;
+
+    // Attainment %
+    const attainmentPct = expectedTarget > 0 ? (totalGrossSales / expectedTarget) * 100 : 0;
+
+    // Base salary (prorated)
+    const baseSalary = BASE_SALARY_FULL * prorate;
+
+    // Variable bonus pool (scales with target)
+    const bonusPoolFull = POOL_PER_USD * expectedTarget; // = 16 × target
+
+    // Variable bonus based on tier
+    let variableBonus = 0;
+    let bonusTierLabel = "";
+    let bonusTierClass = "";
+
+    if (attainmentPct < TIER_BELOW) {
+      variableBonus = 0;
+      bonusTierLabel = "Below 70% — bonus forfeit";
+      bonusTierClass = "tier-below";
+    } else if (attainmentPct < TIER_FULL) {
+      // Pro-rata: pool × attainment%
+      variableBonus = bonusPoolFull * (attainmentPct / 100);
+      bonusTierLabel = "70%–99.9% — pro-rata bonus";
+      bonusTierClass = "tier-pro";
+    } else {
+      // 100%+ → full pool
+      variableBonus = bonusPoolFull;
+      bonusTierLabel = "100%+ — full bonus pool";
+      bonusTierClass = "tier-full";
+    }
+    // Apply working-day proration to the variable bonus
+    const variableBonusProrated = variableBonus * prorate;
+
+    // Over-performance override (on team total gross sales).
+    // PDF: "+0.5% calculated on team's total gross sales volume".
+    // Gross sales are in USD; salaries are paid in PKR. We convert using the
+    // SAME 16:1 ratio derived from the PDF baseline ($5,000 target → ₨ 80,000 pool)
+    // so the calculator stays internally consistent and requires no extra input.
+    let overridePct = 0;
+    let overrideLabel = "No override (≤100% attainment)";
+    let overrideClass = "tier-below";
+
+    // PDF: "Revenue generated BEYOND 100% activates override" — so strictly > 100%.
+    // At exactly 100% (baseline example) total = ₨ 110,000 with NO override.
+    if (attainmentPct >= TIER_OVERRIDE_2_LO) {
+      overridePct = OVERRIDE_2_PCT;
+      overrideLabel = "120%+ → +1.0% override";
+      overrideClass = "tier-over-2";
+    } else if (attainmentPct > TIER_OVERRIDE_1_LO) {
+      overridePct = OVERRIDE_1_PCT;
+      overrideLabel = "100%–119.9% → +0.5% override";
+      overrideClass = "tier-over-1";
+    }
+    const overrideAmountUSD = totalGrossSales * overridePct;       // in USD
+    const overrideAmount = overrideAmountUSD * POOL_PER_USD * prorate; // convert to PKR
+
+    // Total gross salary
+    const totalSalary = baseSalary + variableBonusProrated + overrideAmount;
+
+    return {
+      workingDays, expectedTarget, achievedTarget, personalSale,
+      prorate, prorateLabel,
+      totalGrossSales, attainmentPct,
+      baseSalary,
+      bonusPoolFull,
+      variableBonusPreProrate: variableBonus,
+      variableBonus: variableBonusProrated,
+      bonusTierLabel, bonusTierClass,
+      overridePct, overrideLabel, overrideClass,
+      overrideAmountUSD, overrideAmount,
+      totalSalary,
+    };
+  }
+
+  // ---- Render ----
+  function render(r) {
+    const tierBadge = r.attainmentPct >= 120
+      ? '<span class="tier-badge tier-over-2">120%+ — +1.0% override</span>'
+      : r.attainmentPct > 100
+        ? '<span class="tier-badge tier-over-1">100–119.9% — +0.5% override</span>'
+        : r.attainmentPct >= 100
+          ? '<span class="tier-badge tier-full">Target met — full pool</span>'
+          : r.attainmentPct >= 70
+            ? '<span class="tier-badge tier-pro">Pro-rata tier</span>'
+            : '<span class="tier-badge tier-below">Below threshold</span>';
+
+    const bonusPill = r.attainmentPct < TIER_BELOW
+      ? '<span class="pill zero">0%</span>'
+      : r.attainmentPct >= TIER_FULL
+        ? '<span class="pill full">100% of pool</span>'
+        : '<span class="pill">' + fmtPct(r.attainmentPct) + ' of pool</span>';
+
+    const overridePill = r.overridePct === 0
+      ? '<span class="pill zero">none</span>'
+      : '<span class="pill full">+' + (r.overridePct * 100).toFixed(1) + '% of gross</span>';
+
+    const html = `
+      <div class="salary-hero">
+        <div class="label">Total Monthly Gross Salary</div>
+        <div class="amount"><span class="curr">₨</span>${Math.round(r.totalSalary).toLocaleString("en-PK")}</div>
+        <div class="meta">Target attainment: <strong>${fmtPct(r.attainmentPct)}</strong> &nbsp;·&nbsp; Working days: <strong>${r.workingDays}/${STANDARD_MONTH_DAYS}</strong></div>
+        ${tierBadge}
+      </div>
+
+      <table class="breakdown">
+        <thead>
+          <tr><th>Component</th><th style="text-align:right;">Amount</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Proration factor
+              <span class="note">${r.prorateLabel} → ×${r.prorate.toFixed(3)}</span>
+            </td>
+            <td class="num">×${r.prorate.toFixed(3)}</td>
+          </tr>
+
+          <tr>
+            <td>Total gross sales volume
+              <span class="note">Achieved ${fmtUSD(r.achievedTarget)} + Personal ${fmtUSD(r.personalSale)}</span>
+            </td>
+            <td class="num">${fmtUSD(r.totalGrossSales)}</td>
+          </tr>
+
+          <tr>
+            <td>Target attainment
+              <span class="note">${fmtUSD(r.totalGrossSales)} ÷ ${fmtUSD(r.expectedTarget)}</span>
+            </td>
+            <td class="num">${fmtPct(r.attainmentPct)}</td>
+          </tr>
+
+          <tr>
+            <td><strong>1. Fixed base salary</strong>
+              <span class="note">₨ 30,000 × ${r.prorate.toFixed(3)} (prorated)</span>
+            </td>
+            <td class="num">${fmtPKR(r.baseSalary)}</td>
+          </tr>
+
+          <tr>
+            <td><strong>2. Variable bonus</strong> ${bonusPill}
+              <span class="note">${r.bonusTierLabel}</span>
+              <span class="note">Pool at 100%: ${fmtPKR(r.bonusPoolFull)} (= 16 × target). Pre-proration: ${fmtPKR(r.variableBonusPreProrate)}, then ×${r.prorate.toFixed(3)}.</span>
+            </td>
+            <td class="num">${fmtPKR(r.variableBonus)}</td>
+          </tr>
+
+          <tr>
+            <td><strong>3. Over-performance override</strong> ${overridePill}
+              <span class="note">${r.overrideLabel}</span>
+              <span class="note">${fmtUSD(r.totalGrossSales)} × ${(r.overridePct*100).toFixed(1)}% = ${fmtUSD(r.overrideAmountUSD)} → ×16 PKR/$ × ${r.prorate.toFixed(3)} proration</span>
+            </td>
+            <td class="num">${fmtPKR(r.overrideAmount)}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Total gross salary</td>
+            <td class="num">${fmtPKR(r.totalSalary)}</td>
+          </tr>
+          <tr class="sub">
+            <td colspan="2">Base ${fmtPKR(r.baseSalary)} + Variable ${fmtPKR(r.variableBonus)} + Override ${fmtPKR(r.overrideAmount)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="assumptions">
+        <strong>Built-in assumptions (from the PDF):</strong><br />
+        • Fixed base = <strong>₨ 30,000</strong> per calendar month, prorated by working days ÷ 30.<br />
+        • Variable bonus pool scales with target: the PDF baseline of <strong>$5,000 target → ₨ 80,000 pool</strong> gives a ratio of <strong>16 PKR per $1 of target</strong>.<br />
+        • &lt;70% attainment → bonus forfeit (base only). 70–99.9% → pro-rata. ≥100% → full pool.<br />
+        • Over-performance override is on the team's <em>total gross sales volume</em>: +0.5% (above 100% to 119.9%), +1.0% (120%+, uncapped). The USD override is converted to PKR using the same <strong>16:1</strong> ratio so the calculator stays internally consistent and needs no exchange-rate input.<br />
+        • Personal sale counts 100% toward the team target; no individual commission on it.<br />
+        • All variable components are prorated by the same working-day factor as the base.
+      </div>
+    `;
+
+    const result = $("result");
+    result.classList.remove("empty");
+    result.classList.add("show");
+    result.innerHTML = html;
+    $("printBtn").style.display = "inline-block";
+  }
+
+  function showPlaceholder() {
+    const result = $("result");
+    result.classList.add("empty");
+    result.classList.remove("show");
+    result.innerHTML = `
+      <div class="placeholder">
+        <div class="icon">₨</div>
+        Enter the four values on the left and click <strong>Calculate Salary</strong> to see the full breakdown.
+      </div>`;
+    $("printBtn").style.display = "none";
+  }
+
+  function showError(msg) {
+    const result = $("result");
+    result.classList.remove("empty");
+    result.innerHTML = `<div class="placeholder" style="color:#b3261e;"><div class="icon">!</div>${msg}</div>`;
+    $("printBtn").style.display = "none";
+  }
+
+  // ---- Events ----
+  function gatherInput() {
+    return {
+      workingDays:    num($("workingDays").value),
+      expectedTarget: num($("expectedTarget").value),
+      achievedTarget: num($("achievedTarget").value),
+      personalSale:   num($("personalSale").value),
+    };
+  }
+
+  function validate(input) {
+    if (input.workingDays <= 0) return "Please enter total working days (greater than 0).";
+    if (input.workingDays > 31) return "Working days cannot exceed 31.";
+    if (input.expectedTarget <= 0) return "Please enter the team expected target (greater than 0).";
+    return null;
+  }
+
+  $("calcBtn").addEventListener("click", function () {
+    const input = gatherInput();
+    const err = validate(input);
+    if (err) { showError(err); return; }
+    const r = calculate(input);
+    render(r);
+  });
+
+  $("resetBtn").addEventListener("click", function () {
+    ["workingDays", "expectedTarget", "achievedTarget", "personalSale"].forEach(id => $(id).value = "");
+    showPlaceholder();
+    $("workingDays").focus();
+  });
+
+  $("printBtn").addEventListener("click", function () { window.print(); });
+
+  // Allow Enter key in any input to trigger calculation
+  ["workingDays", "expectedTarget", "achievedTarget", "personalSale"].forEach(id => {
+    $(id).addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); $("calcBtn").click(); }
+    });
+  });
+
+  // Pre-fill the PDF baseline example so the user can verify instantly
+  $("workingDays").value = "30";
+  $("expectedTarget").value = "5000";
+  $("achievedTarget").value = "4200";   // gives 100% with the 800 personal sale below
+  $("personalSale").value = "800";
+})();
+</script>
+</body>
+</html>
